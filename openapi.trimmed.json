@@ -262,44 +262,28 @@
                   ]
                 },
                 "examples": {
-                  "CollectUPIHeadlessResponse": {
-                    "summary": "UPI Collect (H2H mode) response",
+                  "CollectUPIIntentResponse": {
+                    "summary": "UPI Intent collect response (app deep-link)",
                     "value": {
-                      "txn_id": "019d4e2a-296e-7981-b2c3-181a679df8e6",
-                      "method": "UPI",
-                      "payment_link": null,
-                      "order_id": "order_20260402_001",
-                      "state": "in_progress",
-                      "client_amount": null,
-                      "reject_reason": null,
-                      "gross_amount": "1000.00",
-                      "ccy": "INR",
-                      "submitted_at": "2026-04-02T12:27:59.218Z",
-                      "finalized_at": null,
-                      "beneficiary_info": {
-                        "type": "upi",
-                        "upi_account": "g12195732109@okb",
-                        "qr_code_data": "upi://pay?pa=g12195732109@okb&pn=True7&cu=INR&am=1000"
+                      "summary": "UPI Collect (Widget mode) response",
+                      "value": {
+                        "txn_id": "019d4e2b-95e4-7fb2-a526-4a14507dec2b",
+                        "method": "UPI",
+                        "payment_link": "https://link/cmnhgc8oi00bf7aqqfxq36wvs?method=upi&prevId=null",
+                        "order_id": "order_20260402_002",
+                        "state": "in_progress",
+                        "client_amount": null,
+                        "reject_reason": null,
+                        "gross_amount": "1000.00",
+                        "ccy": "INR",
+                        "submitted_at": "2026-04-02T12:29:32.518Z",
+                        "finalized_at": null,
+                        "beneficiary_info": null,
+                        "deadline": null
                       },
-                      "deadline": null
-                    }
-                  },
-                  "CollectUPIWidgetResponse": {
-                    "summary": "UPI Collect (Widget mode) response",
-                    "value": {
-                      "txn_id": "019d4e2b-95e4-7fb2-a526-4a14507dec2b",
-                      "method": "UPI",
-                      "payment_link": "https://link/cmnhgc8oi00bf7aqqfxq36wvs?method=upi&prevId=null",
-                      "order_id": "order_20260402_002",
-                      "state": "in_progress",
-                      "client_amount": null,
-                      "reject_reason": null,
-                      "gross_amount": "1000.00",
-                      "ccy": "INR",
-                      "submitted_at": "2026-04-02T12:29:32.518Z",
-                      "finalized_at": null,
-                      "beneficiary_info": null,
-                      "deadline": null
+                      "method": "UPI_INTENT",
+                      "order_id": "order_20260402_005",
+                      "payment_link": "upi://pay?pa=merchant@okaxis&pn=Merchant&cu=INR&am=1000"
                     }
                   },
                   "DisburseIMPSResponse": {
@@ -315,24 +299,6 @@
                       "gross_amount": "2050.00",
                       "ccy": "INR",
                       "submitted_at": "2026-04-02T12:34:08.621Z",
-                      "finalized_at": null,
-                      "beneficiary_info": null,
-                      "deadline": null
-                    }
-                  },
-                  "DisburseUPIResponse": {
-                    "summary": "UPI Disburse response",
-                    "value": {
-                      "txn_id": "019d4e2c-41a9-7234-c8d9-5e8f9a0b1c2d",
-                      "method": "IMPS",
-                      "payment_link": null,
-                      "order_id": "order_20260402_004",
-                      "state": "in_progress",
-                      "client_amount": null,
-                      "reject_reason": null,
-                      "gross_amount": "500.00",
-                      "ccy": "INR",
-                      "submitted_at": "2026-04-02T12:35:10.412Z",
                       "finalized_at": null,
                       "beneficiary_info": null,
                       "deadline": null
@@ -505,95 +471,6 @@
           },
           "401": {
             "description": "Unauthorized - Invalid API credentials",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      }
-    },
-    "/v1/payments/{id}/buyer_action": {
-      "post": {
-        "tags": [
-          "Payments"
-        ],
-        "summary": "Track Buyer Intent (H2H Only)",
-        "description": "This endpoint should be called by the merchant when a customer interacts with the payment requisites in H2H mode (e.g., clicking the 'Copy' button on the merchant's checkout page). This allows NonPay to track statistical data on customer intent and identify if the customer attempted to pay after viewing the requisites.",
-        "operationId": "trackBuyerAction",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Unique transaction identifier (txn_id)",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "action",
-                  "sender_id"
-                ],
-                "properties": {
-                  "action": {
-                    "type": "string",
-                    "enum": [
-                      "copy_requisites"
-                    ],
-                    "description": "The type of interaction performed by the buyer."
-                  },
-                  "sender_id": {
-                    "type": "string",
-                    "description": "Merchant account identifier."
-                  },
-                  "timestamp": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "ISO 8601 timestamp of the action."
-                  }
-                }
-              },
-              "example": {
-                "action": "copy_requisites",
-                "sender_id": "merchant_12345",
-                "timestamp": "2026-04-30T15:00:00Z"
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Action tracked successfully"
-          },
-          "400": {
-            "description": "Invalid parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Payment not found",
             "content": {
               "application/json": {
                 "schema": {
