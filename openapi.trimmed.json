@@ -109,7 +109,7 @@
           "Payments"
         ],
         "summary": "Create Payment",
-        "description": "Initiate a new payment transaction. This trimmed spec supports only UPI Intent (collect) and IMPS (disburse) methods.",
+        "description": "Initiate a new payment transaction. This trimmed spec supports UPI Widget, UPI Intent (collect) and IMPS (disburse) methods.",
         "operationId": "createPayment",
         "requestBody": {
           "required": true,
@@ -119,6 +119,21 @@
                 "$ref": "#/components/schemas/PaymentCreateDTO"
               },
               "examples": {
+                "CollectUPIWidget": {
+                  "summary": "Collect payment via UPI (Widget mode)",
+                  "value": {
+                    "side": "collect",
+                    "flow": "peer",
+                    "order_id": "order_20260402_002",
+                    "gross_amount": "1000.00",
+                    "callback": "https://merchant.com/callback",
+                    "ccy": "INR",
+                    "method": "upi",
+                    "return_page": "https://merchant.com/return",
+                    "sender_id": "merchant_12345",
+                    "headless": false
+                  }
+                },
                 "CollectUPIIntent": {
                   "summary": "Collect payment via UPI Intent (app deep-link)",
                   "value": {
@@ -188,7 +203,7 @@
                     },
                     "method": {
                       "type": "string",
-                      "description": "Payment method used (UPI_INTENT, IMPS)"
+                      "description": "Payment method used (UPI, UPI_INTENT, IMPS)"
                     },
                     "payment_link": {
                       "type": "string",
@@ -262,6 +277,24 @@
                   ]
                 },
                 "examples": {
+                  "CollectUPIWidgetResponse": {
+                    "summary": "UPI Collect (Widget mode) response",
+                    "value": {
+                      "txn_id": "019d4e2b-95e4-7fb2-a526-4a14507dec2b",
+                      "method": "UPI",
+                      "payment_link": "https://link/cmnhgc8oi00bf7aqqfxq36wvs?method=upi&prevId=null",
+                      "order_id": "order_20260402_002",
+                      "state": "in_progress",
+                      "client_amount": null,
+                      "reject_reason": null,
+                      "gross_amount": "1000.00",
+                      "ccy": "INR",
+                      "submitted_at": "2026-04-02T12:29:32.518Z",
+                      "finalized_at": null,
+                      "beneficiary_info": null,
+                      "deadline": null
+                    }
+                  },
                   "CollectUPIIntentResponse": {
                     "summary": "UPI Intent collect response (app deep-link)",
                     "value": {
@@ -831,10 +864,11 @@
           "method": {
             "type": "string",
             "enum": [
+              "upi",
               "upi_intent",
               "imps"
             ],
-            "description": "Payment method: upi_intent (UPI Intent app deep-link, collect only) or imps (IMPS bank transfer, disburse only)"
+            "description": "Payment method: upi (UPI via widget, collect only), upi_intent (UPI Intent app deep-link, collect only) or imps (IMPS bank transfer, disburse only)"
           },
           "sender_id": {
             "type": "string",
